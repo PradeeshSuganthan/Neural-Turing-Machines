@@ -1,5 +1,5 @@
 import glob
-from keras.preprocessing import text
+from keras.preprocessing import text, sequence
 from keras.utils import to_categorical
 import numpy as np
 
@@ -25,11 +25,11 @@ def getPlaysAsListOfSequences(lower=True, char_level=False):
             start = i-seq_size
             if(start<0):
                 start = 0
-            sequence = play_sequenced[start:i+1]
-            sequences.append(sequence)
+            seq = play_sequenced[start:i+1]
+            sequences.append(seq)
             
-    sequence_array = np.array(sequences)
-    x_plays = sequence_array[:,0:-2]
+    sequence_array = sequence.pad_sequences(sequences)
+    x_plays = sequence_array[:,0:-1]
     y_plays = sequence_array[:,-1]
     return x_plays, y_plays, plays_token
 
@@ -46,3 +46,4 @@ def sequence_to_text(seq, token):
                 script += wordmap[word] + " "
         plays.append(script)
     return plays
+getPlaysAsListOfSequences()
