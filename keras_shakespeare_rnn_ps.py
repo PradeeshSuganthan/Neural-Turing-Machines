@@ -8,4 +8,4 @@ x_plays, y_plays, plays_token = kpp.getPlays()
 
 play = kpp.sequence_to_text(x_plays, plays_token)
 
-print(play[41])
+print(play[0])
