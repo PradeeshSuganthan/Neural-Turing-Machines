@@ -26,7 +26,6 @@ def getPlays(lower=True, char_level=False, mode="binary"):
 
 def sequence_to_text(seq, token):
     wordmap = {v: k for k,v in token.word_index.items()}
-
     plays = []
     for play in seq:
         script = ""
@@ -36,5 +35,4 @@ def sequence_to_text(seq, token):
             else:
                 script += wordmap[word] + " "
         plays.append(script)
-
     return plays
