@@ -15,7 +15,6 @@ def getPlays(lower=True, char_level=False, mode="binary"):
     plays_token = text.Tokenizer(lower=lower, char_level=char_level)
     plays_token.fit_on_texts(plays_files)
     plays_sequenced = plays_token.texts_to_sequences(plays_files)
-    print(plays_sequenced[0], len(plays_sequenced))
     y_plays = []
     x_plays = []
     for play in plays_sequenced:
@@ -24,3 +23,18 @@ def getPlays(lower=True, char_level=False, mode="binary"):
         y_plays.append(y_play)
         x_plays.append(x_play)
     return x_plays, y_plays, plays_token
+
+def sequence_to_text(seq, token):
+    wordmap = {v: k for k,v in token.word_index.items()}
+
+    plays = []
+    for play in seq:
+        script = ""
+        for word in play:
+            if word == 0:
+                break
+            else:
+                script += wordmap[word] + " "
+        plays.append(script)
+
+    return plays
