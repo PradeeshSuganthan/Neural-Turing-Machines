@@ -22,8 +22,6 @@ def getPlays(lower=True, char_level=False, mode="binary"):
         x_play = play+ [0]
         y_plays.append(y_play)
         x_plays.append(x_play)
-    print(len(x_plays))
-    print(len(y_plays))
     return x_plays, y_plays, plays_token
     
     
