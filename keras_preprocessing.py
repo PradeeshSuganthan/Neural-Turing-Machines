@@ -23,7 +23,3 @@ def getPlays(lower=True, char_level=False, mode="binary"):
         y_plays.append(y_play)
         x_plays.append(x_play)
     return x_plays, y_plays, plays_token
-    
-    
-    
-    
