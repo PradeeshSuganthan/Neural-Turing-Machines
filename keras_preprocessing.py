@@ -3,7 +3,7 @@ from keras.preprocessing import text, sequence
 from keras.utils import to_categorical
 import numpy as np
 
-def import_files(text_files_location="./shakespeare/*.txt"):
+def import_files(text_files_location):
     text_file_names = glob.glob(text_files_location)
     text_list = []
     for text_file_name in text_file_names:
@@ -12,13 +12,12 @@ def import_files(text_files_location="./shakespeare/*.txt"):
         text_file.close()
     return text_list
     
-def getPlaysAsListOfSequences(lower=True, char_level=False):
-    plays_files = import_files()
+def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", lower=True, char_level=False, seq_size=1):
+    plays_files = import_files(file_location)
     plays_token = text.Tokenizer(lower=lower, char_level=char_level)
     plays_token.fit_on_texts(plays_files)
     plays_sequenced = plays_token.texts_to_sequences(plays_files)
     sequences = list()
-    seq_size=1
     
     for play_sequenced in plays_sequenced:
         for i in range(1, len(play_sequenced)):
