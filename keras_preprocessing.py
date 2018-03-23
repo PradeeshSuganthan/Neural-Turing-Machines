@@ -11,6 +11,7 @@ def import_files(text_files_location):
         text_list.append(text_file.read())
         text_file.close()
     return text_list
+
     
 def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", lower=True, char_level=False, seq_size=1):
     plays_files = import_files(file_location)
