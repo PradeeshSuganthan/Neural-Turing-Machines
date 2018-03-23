@@ -7,16 +7,17 @@ from keras.utils import to_categorical
 from keras.layers import Dense, Dropout, LSTM, Embedding
 import keras_preprocessing as kpp
 
-seq_length = 50
 
+seq_size = 50
+sample_length =500
 
-x_plays, y_plays, plays_token = kpp.getPlaysAsListOfSequences(seq_size=seq_length)
+x_plays, y_plays, plays_token = kpp.getPlaysAsListOfSequences(seq_size=seq_size)
 print('got data')
 vocab_size = len(plays_token.word_index) +1
 
 
 model = Sequential()
-model.add(Embedding(vocab_size, 50, mask_zero=True, input_length=seq_length))
+model.add(Embedding(vocab_size, 50, mask_zero=True, input_length=seq_size))
 model.add(LSTM(50))
 model.add(Dense(vocab_size, activation='softmax'))
 
@@ -25,12 +26,7 @@ print(model.summary())
 model.compile(loss='sparse_categorical_crossentropy',  optimizer='adam', metrics=['sparse_categorical_accuracy'])
 
 
-history = model.fit(x_plays[:10000, :], y_plays[:10000], verbose=1, epochs=1, batch_size=2048)
+history = model.fit(x_plays[:10000,:], y_plays[:10000], verbose=1, epochs=1, batch_size=32)
 
 
-print(kpp.genSequence(model, plays_token, seq_length))
-
-pyplot.plot(history.history['loss'], label='train')
-#pyplot.plot(history.history['val_loss'], label='test')
-pyplot.legend()
-pyplot.show()
+print(kpp.genSequence(model, plays_token, sample_length, seq_size))

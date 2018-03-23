@@ -46,10 +46,11 @@ def genSequence(model, token, sample_len = 50, seq_size=50):
     seed_text = np.zeros([1,seq_size])
     prediction = ""
     for  _  in range(sample_len):
+        print(seed_text)
         predict = model.predict_classes(seed_text, verbose = 0)
         text = sequence_to_text([predict[0]], token)
         prediction += text
-        seed_text = seed_text[0:] + predict
+        seed_text = np.append(seed_text[:,1:],[predict], axis=1)
 
     print("-" + 'Generated sequence' + '-')
     return prediction
