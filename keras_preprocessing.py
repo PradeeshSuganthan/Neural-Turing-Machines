@@ -35,27 +35,22 @@ def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", lower=True, c
 
 def sequence_to_text(seq, token):
     wordmap = {v: k for k,v in token.word_index.items()}
-    words = []
+    script = ""
     for word in seq:
-        script = ""
-        if word == 0:
-            break
-        else:
-            script += wordmap[word] + " "
-        words.append(script)
-    return words
-getPlaysAsListOfSequences()
+        script += wordmap[word] + " "
+    return script
 
 
-def genSequence(model, token):
-    sample_len = 5
-    print("-"*40 + 'Generated sequence' + '-'*40)
+def genSequence(model, token, sample_len = 50):
     seed_text = [0,0,0]
-    print(seed_text)
+    prediction = ""
     for _ in range(sample_len):
-        predict = model.predict_classes(seed_text, verbose = 1)
-        print(len(predict))
+        print(seed_text)
+        predict = model.predict_classes(seed_text, verbose = 0)
         print(predict)
-        text = sequence_to_text(predict, token)
-        print(text)
+        text = sequence_to_text([predict[0]], token)
+        prediction += text
+        seed_text = predict
 
+    print("-"*40 + 'Generated sequence' + '-'*40)
+    return prediction
