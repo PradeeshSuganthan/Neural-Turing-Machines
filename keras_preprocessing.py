@@ -42,7 +42,7 @@ def sequence_to_text(seq, token):
     return script
 
 
-def genSequence(model, token, sample_len = 50, seq_size=50):
+def genSequence(model, token, sample_len = 500, seq_size=50):
     seed_text = np.zeros([1,seq_size])
     prediction = ""
     for  _  in range(sample_len):
@@ -51,5 +51,5 @@ def genSequence(model, token, sample_len = 50, seq_size=50):
         prediction += text
         seed_text = np.append(seed_text[:,1:],[predict], axis=1)
 
-    print("-" + 'Generated sequence' + '-')
+    print("-"*40 + 'Generated sequence' + '-'*40)
     return prediction
