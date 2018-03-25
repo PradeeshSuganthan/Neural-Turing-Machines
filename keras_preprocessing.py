@@ -17,7 +17,6 @@ def import_files(text_files_location):
 
     
     
-    
 def write_hdf5(dataDict, DataName, PPDataDir, verbose=False):
     if verbose:
         print("Saving processed data to"+PPDataDir+DataName+".hdf5"+" : ", end="", flush=True)
@@ -47,7 +46,7 @@ def read_hdf5(DataName, PPDataDir, verbose=False):
 def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "./processed_data/", verbose=False, lower=True, char_level=False, seq_size=1):
     savedDataName = re.sub(r'\W+', '', file_location)+'_'+str(int(char_level))
     if verbose:
-        print("Loading and Tokenizing Data : ", end="", flush=True)
+        print("Loading and tokenizing data : ", end="", flush=True)
     plays_files = import_files(file_location)
     plays_token = text.Tokenizer(lower=lower, char_level=char_level)
     plays_token.fit_on_texts(plays_files)
@@ -57,22 +56,19 @@ def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "
         
     if(os.path.exists(PPDataDir +savedDataName+".hdf5")):
         if verbose:
-            print("Found Preprocessed Data")
-            print("Loading Preprocessed Data: ",end="", flush=True)
+            print("Found preprocessed data.")
         dataDict = read_hdf5(savedDataName, PPDataDir, verbose=verbose)
         x_plays = dataDict['x_plays']
         y_plays = dataDict['y_plays']
-        if verbose:
-            print("Done")
             
             
     else:
         if verbose:
-            print("No Preprocessed Data Found")
+            print("No preprocessed data found.")
         plays_sequenced = plays_token.texts_to_sequences(plays_files)
         sequences = list()
         if verbose:
-            print("Splitting into seq: ", end="", flush=True)
+            print("Splitting into seq : ", end="", flush=True)
         for play_sequenced in plays_sequenced:
             for i in range(1, len(play_sequenced)):
                 start = i-seq_size
@@ -84,7 +80,7 @@ def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "
                 
         if verbose:
             print("Done")  
-            print("Splitting x and y: ", end="", flush=True)
+            print("Splitting sequence into x and y : ", end="", flush=True)
         sequence_array = sequence.pad_sequences(sequences)
         x_plays = sequence_array[:,0:-1]
         y_plays = sequence_array[:,-1]
@@ -94,9 +90,8 @@ def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "
             
         dataDict = {'x_plays': x_plays, 'y_plays':y_plays}
         write_hdf5(dataDict, savedDataName, PPDataDir, verbose=verbose)
-        if verbose:
-            print("Done")
-            
+        
+        
     return x_plays, y_plays, plays_token
 
 
@@ -109,9 +104,11 @@ def sequence_to_text(seq, token, char_level=False):
     return script
 
 
-def genSequence(model, token, sample_len = 50, seq_size=50, char_level=False, verbose=False):
+
+def genSequence(model, token, sample_len = 500, seq_size=50, char_level=False, verbose=False):
     if verbose:
-        print("Generating text: ", end="", flush=True)
+        print("Generating text : ", end="", flush=True)
+
     seed_text = np.zeros([1,seq_size])
     prediction = ""
     for  _  in range(sample_len):
@@ -119,7 +116,9 @@ def genSequence(model, token, sample_len = 50, seq_size=50, char_level=False, ve
         text = sequence_to_text([predict[0]], token, char_level)
         prediction += text
         seed_text = np.append(seed_text[:,1:],[predict], axis=1)
+
     if verbose:
         print("Done")
-    print("-" + 'Generated sequence' + '-')
+    print("-"*40 + 'Generated sequence' + '-'*40)
     return prediction
+
