@@ -44,7 +44,7 @@ def read_hdf5(DataName, PPDataDir, verbose=False):
     
     
 def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "./processed_data/", verbose=False, lower=True, char_level=False, seq_size=1):
-    savedDataName = re.sub(r'\W+', '', file_location)+'_'+str(int(char_level))
+    savedDataName = re.sub(r'\W+', '', file_location)+'_cl'+str(int(char_level))+'_ss'+str(seq_size)
     if verbose:
         print("Loading and tokenizing data : ", end="", flush=True)
     plays_files = import_files(file_location)

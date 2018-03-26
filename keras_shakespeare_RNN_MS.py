@@ -1,6 +1,5 @@
 import sys
 from matplotlib import pyplot
-sys.path.insert(0, './')
 from keras.preprocessing import text
 from keras.models import Sequential
 from keras.utils import to_categorical
