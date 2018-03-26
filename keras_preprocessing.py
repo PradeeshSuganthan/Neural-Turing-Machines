@@ -80,8 +80,15 @@ def getPlaysAsListOfSequences(file_location="./shakespeare/*.txt", PPDataDir = "
                 
         if verbose:
             print("Done")  
-            print("Splitting sequence into x and y : ", end="", flush=True)
+            print("Padding : ", end="", flush=True)
         sequence_array = sequence.pad_sequences(sequences)
+        if verbose:
+            print("Done")  
+            print("Shuffling : ", end="", flush=True)
+        np.random.shuffle(sequence_array)
+        if verbose:
+            print("Done")  
+            print("Splitting sequence into x and y : ", end="", flush=True)
         x_plays = sequence_array[:,0:-1]
         y_plays = sequence_array[:,-1]
         if verbose:
