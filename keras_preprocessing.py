@@ -14,7 +14,6 @@ def import_files(text_files_location):
         text_list.append(text_file.read())
         text_file.close()
     return text_list
-
     
     
 def write_hdf5(dataDict, DataName, PPDataDir, verbose=False):
@@ -27,7 +26,6 @@ def write_hdf5(dataDict, DataName, PPDataDir, verbose=False):
             PPData[name] = data
     if verbose:
         print("Done")
-        
         
         
 def read_hdf5(DataName, PPDataDir, verbose=False):

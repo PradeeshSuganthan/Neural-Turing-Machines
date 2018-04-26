@@ -7,11 +7,11 @@ from keras.layers import Dense, LSTM, Embedding, GRU
 
 #global constants
 seq_size=30
-sample_len=1000
+sample_len=5000
 char_level=True
 verbose=1
 batch_size=512
-epochs=4
+epochs=2
 steps_per_epoch = None
 
 #load data
@@ -23,9 +23,9 @@ vocabulary = len(plays_token.word_index) + 1
 model = Sequential()
 
 model.add(Embedding(vocabulary, 512))
-model.add(GRU(512, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
-model.add(GRU(512, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
-model.add(GRU(512))
+model.add(LSTM(512, return_sequences=True))
+model.add(LSTM(512, return_sequences=True))
+model.add(LSTM(512))
 model.add(Dense(vocabulary, activation = 'softmax'))
 
 print(model.summary())
