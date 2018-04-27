@@ -104,13 +104,15 @@ def sequence_to_text(seq, token, char_level=False):
     wordmap = {v: k for k,v in token.word_index.items()}
     script = ""
     for word in seq:
-        script += wordmap[word]
+        if word != 0:
+            script += wordmap[word]
         if not char_level: script += "1"
     return script
 
 
 
-def genSequence(model, token, sample_len = 500, seq_size=50, char_level=False, verbose=False):
+def genSequence(epoch,logs,model, token, sample_len = 500, seq_size=50, char_level=False, verbose=False):
+    print('This should generate text')
     if verbose:
         print("Generating text : ", end="", flush=True)
 
@@ -118,6 +120,7 @@ def genSequence(model, token, sample_len = 500, seq_size=50, char_level=False, v
     prediction = ""
     for  _  in range(sample_len):
         predict = model.predict_classes(seed_text, verbose = 0)
+        #print(predict)
         text = sequence_to_text([predict[0]], token, char_level)
         prediction += text
         seed_text = np.append(seed_text[:,1:],[predict], axis=1)
@@ -125,5 +128,6 @@ def genSequence(model, token, sample_len = 500, seq_size=50, char_level=False, v
     if verbose:
         print("Done")
     print("-"*40 + 'Generated sequence' + '-'*40)
-    return prediction
+    print(prediction)
+    print("-"*40 + 'Terminate sequence' + '-'*40)
 
