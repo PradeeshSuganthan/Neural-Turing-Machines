@@ -6,7 +6,7 @@ from keras.preprocessing import text, sequence
 from keras.utils import to_categorical
 import numpy as np
 
-def import_files(text_files_location):
+def import_files(text_files_location="./shakespeare/*.txt"):
     text_file_names = glob.glob(text_files_location)
     text_list = []
     for text_file_name in text_file_names:
