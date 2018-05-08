@@ -1,8 +1,7 @@
 import numpy as np
 import random
 import sys
-import io
-import keras_preprocessing as kpp
+import keras_rnn_preprocessing as kpp
 
 from keras import callbacks, optimizers
 from keras.models import Sequential
@@ -13,43 +12,23 @@ seq_size=40
 sample_len=1000
 char_level=True
 verbose=1
-batch_size=1024
-epochs=10
+batch_size=512
+epochs=50
 steps_per_epoch = None
 step = 3
+nietzsche = "./nietzsche/*.txt"
+shakespeare = "./shakespeare/*.txt"
 
 #load data
-#x_plays, y_plays, plays_token = kpp.getPlaysAsListOfSequences(seq_size=seq_size, char_level=char_level, verbose=verbose)
-files = kpp.import_files()
-combined_plays = " ".join(files)
-chars = sorted(list(set(combined_plays)))
-char_indices = dict((c,i) for i,c in enumerate(chars))
-indices_char = dict((i,c) for i,c in enumerate(chars))
-
-vocabulary = len(chars)
-
-print("Creating sequences...")
-sentences = []
-next_chars = []
-for i in range(0,len(combined_plays)-seq_size,step):
-    sentences.append(combined_plays[i:i+seq_size])
-    next_chars.append(combined_plays[i+seq_size])
-
-print("Creating training dataset...")
-x = np.zeros((len(sentences),seq_size,vocabulary),dtype=np.bool)
-y = np.zeros((len(sentences),vocabulary),dtype=np.bool)
-for i, sentence in enumerate(sentences):
-    for t, char in enumerate(sentence):
-        x[i,t,char_indices[char]] = 1
-    y[i,char_indices[next_chars[i]]] = 1
+combined_plays, chars, vocabulary, char_indices, indices_char, x, y = kpp.get_data(seq_size, step, nietzsche)
 
 #create model
 model = Sequential()
 
 #model.add(Embedding(vocabulary, 32))
-#model.add(LSTM(32, return_sequences=True))
-#model.add(LSTM(32, return_sequences=True))
-model.add(LSTM(32, input_shape=(seq_size,vocabulary)))
+model.add(LSTM(256, input_shape=(seq_size,vocabulary), return_sequences=True))
+model.add(LSTM(256, return_sequences=True))
+model.add(LSTM(256))
 model.add(Dense(vocabulary, activation = 'softmax'))
 
 print(model.summary())
@@ -58,7 +37,6 @@ adam = optimizers.Adam()
 model.compile(loss = 'categorical_crossentropy', optimizer = adam, metrics = ['categorical_accuracy'])
 
 def sample(preds, temperature=1.0):
-    # helper function to sample an index from a probability array
     preds = np.asarray(preds).astype('float64')
     preds = np.log(preds) / temperature
     exp_preds = np.exp(preds)
@@ -67,8 +45,7 @@ def sample(preds, temperature=1.0):
     return np.argmax(probas)
 
 
-def on_epoch_end(epoch, logs):
-    # Function invoked at end of each epoch. Prints generated text.
+def generate_sample(epoch, logs):
     print()
     print('----- Generating text after Epoch: %d' % epoch)
 
@@ -99,10 +76,10 @@ def on_epoch_end(epoch, logs):
     print()
 
 #create callbacks
-path = 'saved_models/model_{epoch:02d}.h5'
+path = 'saved_models/nieztsche_{epoch:02d}.h5'
 checkpoint = callbacks.ModelCheckpoint(path, verbose=verbose)
 reduceLR = callbacks.ReduceLROnPlateau(monitor='val_loss', patience=2, verbose=1, factor=.5)
-print_sample = callbacks.LambdaCallback(on_epoch_end=on_epoch_end)
+print_sample = callbacks.LambdaCallback(on_epoch_end=generate_sample)
 
 #fit model
 model.fit(x,y,epochs=epochs,verbose=verbose, batch_size = batch_size, steps_per_epoch=steps_per_epoch, 
